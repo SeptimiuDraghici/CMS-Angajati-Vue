@@ -1,17 +1,22 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TitleComponent/>
+    <FormComponent/>
+    <TableComponent/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TitleComponent from './components/TitleComponent.vue'
+import FormComponent from './components/FormComponent.vue'
+import TableComponent from './components/TableComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TitleComponent,
+    FormComponent,
+    TableComponent
   }
 }
 </script>
@@ -23,6 +28,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
