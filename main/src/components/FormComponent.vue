@@ -41,7 +41,7 @@
             <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)">
             <br><br>
             <center>
-                <input class="my-button" type="button" name="submit" Value="Send" onClick="getInputs(this.form);">
+                <input class="my-button" type="button" name="submit" Value="Send" @click="getInputs();">
                 <input id="cancel-button" class="my-button" type="button" name="cancel" value="Cancel" onclick="closeForm()">
             </center>
         </form>
@@ -49,10 +49,26 @@
 </template>
 
 <script>
+import db from 'firebase'
 export default {
   name: 'FormComponent',
+  data () {
+    return {
+        angajati: []
+    }
+  },
+  created () {
+    db.collection('angajati').get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            console.log(doc);
+        });
+    })
+  },
   methods: {
-
+        getInputs(form){
+            this.nume = form.nume;
+            console.log(this.nume);
+        }
   }
 }
 </script>
