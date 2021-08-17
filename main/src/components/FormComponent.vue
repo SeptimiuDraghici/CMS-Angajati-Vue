@@ -1,5 +1,5 @@
 <template>
-  <div class="form-div">
+    <div class="form-div">
         <form id="myForm" name="myForm" method="GET">
             <label>
                 Nume:*
@@ -51,10 +51,13 @@
 <script>
 export default {
   name: 'FormComponent',
+  methods: {
+
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
     @import '../mystyles.css'
 </style>
