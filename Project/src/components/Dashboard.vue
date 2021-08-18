@@ -1,5 +1,6 @@
 <template>
     <div id="dashboard">
+        <h1>Employees</h1>
         <div class="table-div">
             <table id="myTable" style="border: solid black; color:white;">
                 <tr>
@@ -20,9 +21,6 @@
                     </th>
                     <th>
                         Data nasterii
-                    </th>
-                    <th>
-                        CheckBox Delete
                     </th>
                 </tr>
                 <tr v-for="angajat in employees" v-bind:key="angajat.id">

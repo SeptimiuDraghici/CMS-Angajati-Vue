@@ -1,5 +1,6 @@
 <template>
     <div id="add-employee">
+        <h1>Add Employee</h1>
         <div class="form-div">
             <form @submit.prevent="sendEmployee">
                 <label>
@@ -15,7 +16,7 @@
                 <label>
                     Email:*
                 </label>
-                <input type="text" name="email" v-model="id" required>
+                <input type="text" name="email" v-model="id" required @keyup="ok = true">
                 <br><br>
                 <label>
                     Gender:*
@@ -36,14 +37,14 @@
                 <label>
                     Data nasterii:*
                 </label>
-                <input type="date" name="data_nasterii" v-model="nume" required>
+                <input type="date" name="data_nasterii" v-model="date" required>
                 <br><br>
                 Imagine:*
                 <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)">
                 <br><br>
                 <center>
-                    <input class="my-button" type="button" name="submit" Value="Send" @click="getInputs();">
-                    <input id="cancel-button" class="my-button" type="button" name="cancel" value="Cancel" onclick="closeForm()">
+                    <button class="my-button" type="submit">Send</button>
+                    <router-link class="my-button" to="/">Cancel</router-link>
                 </center>
             </form>
         </div>
@@ -51,11 +52,56 @@
 </template>
 
 <script>
+import db from './firebaseInit'
 export default {
     name: 'add-employee',
     data () {
         return {
-            
+            ok: true,
+            id: null,
+            nume: null,
+            prenume: null,
+            email: null,
+            gender: null,
+            date: null
+        }
+    },
+    methods: {
+        async sendEmployee () {
+            const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+            if(re.test(String(this.id))) {
+                await db.collection('angajati').get().then(doc => {
+                    doc.forEach(doc => {
+                        var email = doc.data().id
+                        console.log(email + "/" + this.id)
+                        if(email == this.id)
+                        {
+                            this.ok = false
+                        }
+                    })
+                })
+                console.log(this.ok)
+                if(this.ok) {
+                    db.collection('angajati').doc(this.id).set({
+                        id: this.id,
+                        nume: this.nume,
+                        prenume: this.prenume,
+                        email: this.id,
+                        gender: this.gender,
+                        data_nasterii: this.date
+                    })
+                    .then(docRef => {
+                        this.$router.push('/')
+                    })
+                    .catch(error => console.log(err))
+                }
+                else {
+                    alert("Email is already taken!")
+                }
+            }
+            else{
+                alert("\'Email\' invalid! (ex email: example@gmail.com)")
+            }
         }
     }
 }
@@ -99,6 +145,10 @@ export default {
     }
 
     .my-button {
+        margin-right: 5px;
+        padding: 2px;
+        border: solid white;
+        text-decoration: none;
         width: fit-content;
         margin-top: 10px;
         background-color: rgb(255, 0, 0);
