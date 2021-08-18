@@ -17,9 +17,6 @@ export default {
     TitleComponent,
     FormComponent,
     TableComponent
-  },
-  methods: {
-
   }
 }
 </script>
