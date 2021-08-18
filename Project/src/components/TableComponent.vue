@@ -25,13 +25,18 @@
                 </th>
             </tr>
         </table>
-        <input class="my-button" type="button" value="Delete Employees" onclick="deleteRow('myTable')"/>
+        <div class="table-buttons">
+            <router-link to="/add" class="my-button">
+                Add
+            </router-link>
+            <input class="my-button" type="button" value="Delete Employees" onclick="deleteRow('myTable')"/>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'TitleComponent',
+  name: 'TableComponent',
 }
 </script>
 
@@ -62,7 +67,22 @@ export default {
         padding: 10px;
     }
 
-    .table-div input {
+    .my-button {
+        margin-right: 5px;
+        padding: 2px;
+        border: solid white;
+        text-decoration: none;
+        width: fit-content;
+        margin-top: 10px;
+        background-color: rgb(255, 0, 0);
+        color: white;
+        font-size: 21px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+
+    .table-buttons{
+        display: flex;
+        flex-direction: row;
         margin-left: auto;
     }
 
