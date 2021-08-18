@@ -45,7 +45,7 @@
                         {{ angajat.date }}
                     </td>
                     <td>
-                        DEL
+                        <button class="my-button" @click="deleteEmployee(angajat.id)">DEL</button>
                     </td>
                 </tr>
             </table>
@@ -53,38 +53,51 @@
                 <router-link to="/add" class="my-button">
                     Add
                 </router-link>
-                <input class="my-button" type="button" value="Delete Employees" onclick="deleteRow('myTable')"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import TableComponent from './TableComponent'
 import db from './firebaseInit'
 export default {
     name: 'dashboard',
-    components: {
-        TableComponent
-    },
     data () {
         return {
             employees: []
         }
     },
     created () {
-        db.collection('angajati').orderBy('nume').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                const data = {
-                    'id': doc.id,
-                    'nume': doc.data().nume,
-                    'prenume': doc.data().prenume,
-                    'gender': doc.data().gender,
-                    'date': doc.data().data_nasterii
-                }
-                this.employees.push(data)
+        this.populateTable()
+    },
+    methods: {
+        populateTable () {
+            this.employees = []
+            db.collection('angajati').orderBy('nume').get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    const data = {
+                        'id': doc.id,
+                        'nume': doc.data().nume,
+                        'prenume': doc.data().prenume,
+                        'gender': doc.data().gender,
+                        'date': doc.data().data_nasterii
+                    }
+                    this.employees.push(data)
+                })
             })
-        })
+        },
+        async deleteEmployee (id) {
+            console.log(id)
+            if(confirm('Are you sure?'))
+            {
+                await db.collection('angajati').where('email','==',id).get().then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        doc.ref.delete()
+                    })
+                })
+                this.populateTable()
+            }
+        }
     }
 }
 </script>
