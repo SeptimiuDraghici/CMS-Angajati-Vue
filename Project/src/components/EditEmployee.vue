@@ -2,7 +2,7 @@
     <div id="edit-employee">
         <h1>Edit Employee</h1>
         <div class="form-div">
-            <form @submit.prevent="saveEmployee">
+            <form @submit.prevent="saveEmployee($event)">
                 <label>
                     Nume:*
                 </label>
@@ -40,7 +40,7 @@
                 <input type="date" name="data_nasterii" v-model="date" required>
                 <br><br>
                 Imagine:*
-                <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)">
+                <input type="file" accept="image/*" name="image" id="file">
                 <br><br>
                 <center>
                     <button class="my-button" type="submit">Send</button>
@@ -53,6 +53,7 @@
 
 <script>
 import db from './firebaseInit'
+import storageRef from './storageRef'
 export default {
     name: 'edit-employee',
     data () {
@@ -95,7 +96,10 @@ export default {
                 })
             })
         },
-        saveEmployee () {
+        saveEmployee (event) {
+            if(event.target[5].files[0]) {
+                this.UploadImage(event.target[5].files[0])
+            }
             db.collection('angajati').doc(this.id).set({
                 id: this.id,
                 nume: this.nume,
@@ -108,6 +112,14 @@ export default {
                 this.$router.push('/')
             })
             .catch(error => console.log(err))
+        },
+        UploadImage (image) {
+            let metadata = {
+                contentType: "image/jpeg",
+            };
+            storageRef.child(this.id).put(image, metadata).then(() => {
+                console.log("file uploaded?!");
+            });
         }
     }
 }

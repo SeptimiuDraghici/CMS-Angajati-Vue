@@ -25,7 +25,7 @@
                 </tr>
                 <tr v-for="angajat in employees" v-bind:key="angajat.id">
                     <td>
-                        Picture
+                        <img :src="angajat.pic" width="50" height="50" />
                     </td>
                     <td>
                         {{ angajat.nume }}
@@ -70,13 +70,15 @@
 <script>
 var moment = require('moment')
 import db from './firebaseInit'
+import storageRef from './storageRef'
 export default {
     name: 'dashboard',
     data () {
         return {
             employees: [],
             results_loaded: false,
-            data_nasterii: ''
+            data_nasterii: '',
+            employeePictures: []
         }
     },
     created () {
@@ -85,7 +87,7 @@ export default {
     methods: {
         populateTable () {
             this.employees = []
-            db.collection('angajati').orderBy('nume').get().then(querySnapshot => {
+            db.collection('angajati').get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     this.data_nasterii = moment(doc.data().data_nasterii).format("D MMMM YYYY")
                     const data = {
@@ -93,11 +95,23 @@ export default {
                         'nume': doc.data().nume,
                         'prenume': doc.data().prenume,
                         'gender': doc.data().gender,
-                        'date': this.data_nasterii
+                        'date': this.data_nasterii,
                     }
-                    this.employees.push(data)
+                    this.getPicture(doc.id,data)
                 })
                 this.results_loaded = true
+            console.log(this.employeePictures);
+            })
+        },
+        getPicture (email,data) {
+            storageRef.child(email).getDownloadURL().then((url) => {
+                data.pic = url;
+                this.employees.push(data)
+            }).catch(()=>{
+                storageRef.child('default.png').getDownloadURL().then((url) => {
+                    data.pic = url;
+                    this.employees.push(data)
+                })
             })
         },
         async deleteEmployee (id) {

@@ -2,7 +2,7 @@
     <div id="add-employee">
         <h1>Add Employee</h1>
         <div class="form-div">
-            <form @submit.prevent="sendEmployee">
+            <form @submit.prevent="sendEmployee($event)">
                 <label>
                     Nume:*
                 </label>
@@ -40,7 +40,7 @@
                 <input type="date" name="data_nasterii" v-model="date" required>
                 <br><br>
                 Imagine:*
-                <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)">
+                <input type="file" accept="image/*" name="image" id="file">
                 <br><br>
                 <center>
                     <button class="my-button" type="submit">Send</button>
@@ -53,6 +53,7 @@
 
 <script>
 import db from './firebaseInit'
+import storageRef from './storageRef'
 export default {
     name: 'add-employee',
     data () {
@@ -67,7 +68,10 @@ export default {
         }
     },
     methods: {
-        async sendEmployee () {
+        async sendEmployee (event) {
+            if(event.target[5].files[0]) {
+                this.UploadImage(event.target[5].files[0])
+            }
             const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
             if(re.test(String(this.id))) {
                 await db.collection('angajati').get().then(doc => {
@@ -102,6 +106,14 @@ export default {
             else{
                 alert("\'Email\' invalid! (ex email: example@gmail.com)")
             }
+        },
+        UploadImage (image) {
+            let metadata = {
+                contentType: "image/jpeg",
+            };
+            storageRef.child(this.id).put(image, metadata).then(() => {
+                console.log("file uploaded?!");
+            });
         }
     }
 }
